@@ -87,24 +87,24 @@ const initialDefaultData: HealthData = {
     completedDates: [],
   },
   profile: {
-    age: 25,
-    gender: 'male',
-    height: 175,
-    weight: 80,
-    targetWeight: 75,
+    age: 0,
+    gender: 'other',
+    height: 0,
+    weight: 0,
+    targetWeight: 0,
     targetTimeline: 12,
-    activityLevel: 'moderately_active',
-    dietPreference: 'Veg',
+    activityLevel: 'sedentary',
+    dietPreference: 'Omnivore',
     allergies: [],
     sleepHours: 8,
     goal: '',
-    mealsPerDay: 4,
+    mealsPerDay: 3,
     waterGoal: 8,
-    stepsGoal: 10000,
-    wakeUpTime: '06:00',
-    sleepTime: '22:00',
-    workoutDuration: 45,
-    workoutDaysPerWeek: 5,
+    stepsGoal: 8000,
+    wakeUpTime: '07:00',
+    sleepTime: '23:00',
+    workoutDuration: 30,
+    workoutDaysPerWeek: 3,
     medicalConditions: '',
     supplements: '',
     profileComplete: false,
@@ -259,9 +259,22 @@ export function HealthProvider({ children }: { children: React.ReactNode }) {
     setData(prev => ({ ...prev, user: { ...prev.user, streak: calculateStreak(prev.user.completedDates) } }));
   }, []);
 
-  const login = async (email: string, name: string) => {
+  const login = async (email: string, name: string, bodyStats?: { height: number; weight: number }) => {
     const today = new Date().toISOString().split('T')[0];
-    setData(prev => ({ ...prev, user: { ...prev.user, email, name, isAuthenticated: true, streak: 1, lastActiveDate: today, completedDates: [] } }));
+    setData(prev => {
+      const next = { 
+        ...prev, 
+        user: { ...prev.user, email, name, isAuthenticated: true, streak: 1, lastActiveDate: today, completedDates: [] },
+        profile: { 
+          ...prev.profile, 
+          height: bodyStats?.height ?? prev.profile.height, 
+          weight: bodyStats?.weight ?? prev.profile.weight,
+          profileComplete: bodyStats ? true : prev.profile.profileComplete
+        }
+      };
+      localStorage.setItem('health_buddy_data', JSON.stringify(next));
+      return next;
+    });
   };
 
   const logout = () => {
@@ -272,7 +285,11 @@ export function HealthProvider({ children }: { children: React.ReactNode }) {
   const updateUser = (user: any) => setData((prev: any) => ({ ...prev, user: { ...prev.user, ...user } }));
   
   const updateProfile = (profile: any) => {
-    setData((prev: any) => ({ ...prev, profile: { ...prev.profile, ...profile } }));
+    setData((prev: any) => {
+      const next = { ...prev, profile: { ...prev.profile, ...profile } };
+      localStorage.setItem('health_buddy_data', JSON.stringify(next));
+      return next;
+    });
   };
 
   const updateMood = (mood: any) => setData((prev: any) => ({ ...prev, mood: { ...prev.mood, ...mood } }));

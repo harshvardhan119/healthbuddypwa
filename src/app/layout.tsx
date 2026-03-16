@@ -5,7 +5,6 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { HealthProvider } from "@/lib/health-context";
 import AppShell from "@/components/app-shell";
 import BuddyChat from "@/components/buddy-chat";
-import InstallPWA from "@/components/install-pwa";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -47,7 +46,6 @@ export default function RootLayout({
               {children}
             </AppShell>
             <BuddyChat />
-            <InstallPWA />
             {/* Service Worker Registration */}
             <script
               dangerouslySetInnerHTML={{

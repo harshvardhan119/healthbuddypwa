@@ -13,6 +13,16 @@ export interface HealthState {
   totalDays?: number;
 }
 
+export const suggestGoal = (profile: any) => {
+  const { weight, height } = profile;
+  if (!weight || !height) return "get_fit";
+  
+  const bmi = weight / ((height / 100) ** 2);
+  if (bmi > 25) return "lose_weight";
+  if (bmi < 18.5) return "gain_muscle";
+  return "get_fit";
+};
+
 export const getAIPlanning = async (state: HealthState) => {
   const dayInfo = state.dayNumber
     ? `This is DAY ${state.dayNumber} of a ${state.totalDays}-day plan. Adapt the exercises and meals to the progression stage. Early days = lighter intro. Mid phase = peak intensity. Final phase = consolidation & maintenance.`
@@ -207,4 +217,3 @@ export const reconcileMissedTasks = async (state: HealthState, missedTasks: any[
     return null;
   }
 };
-

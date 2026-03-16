@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
 import Link from "next/link";
+import InstallPWA from "@/components/install-pwa";
 
 export default function Home() {
   return (
@@ -20,15 +21,12 @@ export default function Home() {
         <div className="w-64 h-64 rounded-[80px] bg-white flex items-center justify-center relative shadow-[0_40px_80px_-15px_rgba(0,0,0,0.08)] border border-white group-hover:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.12)] transition-all overflow-hidden">
           {/* High-End Animated Health Illustration */}
           <svg viewBox="0 0 200 200" className="w-48 h-48">
-            {/* Pulsing Energy Background */}
             <motion.circle 
               cx="100" cy="100" r="80" 
               fill="rgba(16, 185, 129, 0.05)"
               animate={{ scale: [1, 1.1, 1] }}
               transition={{ duration: 4, repeat: Infinity }}
             />
-            
-            {/* Central Heartbeat/Life Line */}
             <motion.path
               d="M40 100 H70 L85 60 L115 140 L130 100 H160"
               fill="none"
@@ -40,8 +38,6 @@ export default function Home() {
               animate={{ pathLength: 1 }}
               transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
             />
-            
-            {/* Floating Health Icons with micro-animations */}
             {[
               { d: "M150 60 L170 60 M160 50 L160 70", color: "#3b82f6", delay: 0 },
               { d: "M30 50 Q 50 30 70 50", color: "#fbbf24", delay: 0.5 },
@@ -58,8 +54,6 @@ export default function Home() {
                 transition={{ duration: 3, repeat: Infinity, delay: icon.delay }}
               />
             ))}
-
-            {/* Orbiting particles */}
             {[0, 120, 240].map((angle, i) => (
               <motion.circle
                 key={i}
@@ -80,8 +74,6 @@ export default function Home() {
             ))}
           </svg>
         </div>
-        
-        {/* Shadow Bloom */}
         <motion.div 
           animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
           transition={{ duration: 4, repeat: Infinity }}
@@ -121,7 +113,6 @@ export default function Home() {
             <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform" />
           </button>
         </Link>
-        
         <div className="flex flex-col items-center gap-4 py-4">
           <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] opacity-30">
             <ShieldCheck size={16} /> 256-bit Secure Profile
@@ -131,6 +122,7 @@ export default function Home() {
           </div>
         </div>
       </motion.div>
+      <InstallPWA />
     </div>
   );
 }

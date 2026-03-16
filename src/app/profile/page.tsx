@@ -1,7 +1,7 @@
 "use client";
 
 import { useHealth } from "@/lib/health-context";
-import { getAIPlanning } from "@/lib/ai-engine";
+import { getAIPlanning, suggestGoal } from "@/lib/ai-engine";
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -25,10 +25,31 @@ export default function Profile() {
   const [tempPlan, setTempPlan] = useState<any>(null);
 
   useEffect(() => {
-    setForm({ ...data.profile });
+    if (data.profile) {
+      setForm((prev: any) => {
+        // Only update if data.profile has values and local form is still "empty" or sync is explicitly needed
+        const isSelfEmpty = prev.weight === 0 || prev.height === 0;
+        if (isSelfEmpty || data.profile.profileComplete) {
+          return { ...data.profile };
+        }
+        return prev;
+      });
+    }
     setUserName(data.user.name || '');
     setUserEmail(data.user.email || '');
   }, [data.profile, data.user]);
+
+  // AI Goal Suggestion logic
+  useEffect(() => {
+    if (form.weight > 0 && form.height > 0) {
+      if (typeof suggestGoal === "function") {
+        const suggested = suggestGoal({ weight: form.weight, height: form.height });
+        if (suggested !== form.goal) {
+          setForm((prev: any) => ({ ...prev, goal: suggested }));
+        }
+      }
+    }
+  }, [form.weight, form.height]);
 
   const handleChange = (name: string, value: any) => {
     setForm((prev: any) => ({ ...prev, [name]: value }));

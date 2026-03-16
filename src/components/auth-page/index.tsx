@@ -3,19 +3,23 @@
 import { useState } from "react";
 import { useHealth } from "@/lib/health-context";
 import { motion } from "framer-motion";
-import { ShieldCheck, Mail, User, ArrowRight } from "lucide-react";
+import { ShieldCheck, Mail, User, ArrowRight, Ruler, Scale } from "lucide-react";
+import InstallPWA from "@/components/install-pwa";
 
 export default function AuthPage({ onAuthSuccess }: { onAuthSuccess: () => void }) {
   const { login } = useHealth();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !name) return;
+    if (!email || !name || !height || !weight) return;
     setLoading(true);
-    await login(email, name);
+    // Explicitly pass body stats to login
+    await login(email, name, { height: Number(height), weight: Number(weight) });
     onAuthSuccess();
   };
 
@@ -63,11 +67,35 @@ export default function AuthPage({ onAuthSuccess }: { onAuthSuccess: () => void 
               className="w-full bg-secondary/50 border border-black/5 rounded-[24px] py-4 pl-12 pr-4 font-bold text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
             />
           </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="relative">
+              <Ruler className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground opacity-40" size={16} />
+              <input 
+                type="number"
+                placeholder="Height (cm)"
+                value={height}
+                onChange={(e) => setHeight(e.target.value)}
+                required
+                className="w-full bg-secondary/50 border border-black/5 rounded-[24px] py-4 pl-11 pr-4 font-bold text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+              />
+            </div>
+            <div className="relative">
+              <Scale className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground opacity-40" size={16} />
+              <input 
+                type="number"
+                placeholder="Weight (kg)"
+                value={weight}
+                onChange={(e) => setWeight(e.target.value)}
+                required
+                className="w-full bg-secondary/50 border border-black/5 rounded-[24px] py-4 pl-11 pr-4 font-bold text-sm focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+              />
+            </div>
+          </div>
         </div>
 
         <button 
           type="submit"
-          disabled={loading || !email || !name}
+          disabled={loading || !email || !name || !height || !weight}
           className="w-full bg-primary hover:bg-primary/90 text-white rounded-[24px] py-5 font-black text-lg shadow-2xl shadow-primary/25 transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2 group disabled:opacity-50 disabled:scale-100"
         >
           {loading ? "Syncing..." : "Start My Journey"}
@@ -78,6 +106,7 @@ export default function AuthPage({ onAuthSuccess }: { onAuthSuccess: () => void 
       <p className="text-[10px] uppercase font-black tracking-[0.3em] opacity-30">
         Secured with End-to-End Encryption
       </p>
+      <InstallPWA />
     </div>
   );
 }
